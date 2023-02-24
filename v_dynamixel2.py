@@ -2,7 +2,7 @@ from dynamixel_sdk import PortHandler, PacketHandler
 from dynamixel_sdk import COMM_SUCCESS
 from dynamixel_sdk import GroupSyncRead
 from time import sleep
-from control_table import *
+from v_control_table import *
 
 LEN_PRESENT_POSITION        = 4
 
