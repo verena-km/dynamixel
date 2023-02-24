@@ -17,12 +17,14 @@ class DynamixelSystem(object):
         self.packetHandler = PacketHandler(2.0)
 
         if self.portHandler.openPort():
-            print("Succeeded to open the port")
+            # print("Succeeded to open the port")
+            pass
         else:
             print("Failed to open the port")
             quit()
         if self.portHandler.setBaudRate(self.baudrate):
-            print("Succeeded to change the baudrate")
+            # print("Succeeded to change the baudrate")
+            pass
         else:
             print("Failed to change the baudrate")
             quit()
@@ -385,7 +387,7 @@ class DynamixelMotor(object):
     def factory_reset(self, option=0x02):
         self.ds.factory_reset(self.id, option)
 
-    def goto_position(self,position, velocity = 50 ):
+    def goto_position(self,position, velocity = 50, acceleration = 0 ):
         #print(self.max_position_limit)
         #print(self.min_position_limit)
    
@@ -393,12 +395,11 @@ class DynamixelMotor(object):
             # set operation mode "Position Control Mode (3)"
             self.operating_mode = 3
 
+            # set acceleration
+            self.profile_acceleration = acceleration
 
-            self.profile_configuration = 0            
             # set velocity
             self.profile_velocity = velocity
-            # set acceleration value
-            self.profile_acceleration = 0 
 
             # Enable Torque
             self.torque = 1
@@ -414,14 +415,64 @@ class DynamixelMotor(object):
                     break
             # Disable Torque
             self.torque = 0
-        else:
-            print("Position limit exceeded")
+        # else:
+        #     print("Position limit exceeded")
 
-    def extended_goto_position(self, position, velocity = 50):
-        # set operation mode "Position Control Mode (3)"
+    def goto_position_time_based(self, position, total_time = 5, acceleration_time = 0):
+        if position <= self.max_position_limit and position >= self.min_position_limit:
+            # set operation mode "Position Control Mode (3)"
+            self.operating_mode = 3
+
+            # set time based profile            
+            self.profile_configuration = 1
+
+            # set acceleration
+            self.profile_acceleration = acceleration_time
+
+            # set velocity
+            self.profile_velocity = total_time
+
+            # Enable Torque
+            self.torque = 1
+            # Write goal position
+            self.goal_position = position
+
+            while 1:
+                # Read present position
+                present_position = self.present_position
+                #print("[ID:%04d] GoalPos:%04d  PresPos:%03d" % (self.id, position, dxl_present_position))
+                # break if position was reached
+                if not abs(position - present_position) > DXL_MOVING_STATUS_THRESHOLD:
+                    break
+            # Disable Torque
+            self.torque = 0
+            # reset Profile
+            self.profile_configuration = 0
+        # else:
+        #     print("Position limit exceeded")
+
+
+    def goto_degree(self, degree, velocity = 50, acceleration = 0 ):
+
+        units = int(degree * 4096/360 + 2048)
+        self.goto_position(units, velocity, acceleration)
+
+        # 0.087891 Grad entspricht einer Unit
+
+
+    def goto_degree_time_based(self, degree, total_time = 5, acceleration_time = 0):
+
+        units = int(degree * 4096/360 + 2048)
+        self.goto_position_time_based(units, total_time, acceleration_time)
+
+
+    def extended_goto_position(self, position, velocity = 50, acceleration = 0):
+        # set operation mode "Extended Position Control Mode (4)"
         self.operating_mode = 4
         # set velocity
         self.profile_velocity = velocity
+        # set acceleration
+        self.profile_acceleration = acceleration
         # Enable Torque
         self.torque = 1
         # Write goal position
@@ -436,14 +487,35 @@ class DynamixelMotor(object):
                 break
         # Disable Torque
         self.torque = 0
+        
 
 
-    def goto_degree(self, degree, velocity = 50):
+    def extended_goto_position_time_based(self, position, total_time = 5, acceleration_time = 0):
+        # set operation mode "Extended Position Control Mode (4)"
+        self.operating_mode = 4
+        # set time based profile            
+        self.profile_configuration = 1
 
-        units = int(degree * 4096/360 + 2048)
-        self.goto_position(units, velocity)
+        # set velocity
+        self.profile_velocity = total_time
+        # set acceleration
+        self.profile_acceleration = acceleration_time
+        # Enable Torque
+        self.torque = 1
+        # Write goal position
+        self.goal_position = position
 
-        # 0.087891 Grad entspricht einer Unit
+        while 1:
+            # Read present position
+            present_position = self.present_position
+            #print("[ID:%04d] GoalPos:%04d  PresPos:%03d" % (self.id, position, dxl_present_position))
+            # break if positon was reached
+            if not abs(position - present_position) > DXL_MOVING_STATUS_THRESHOLD:
+                break
+        # Disable Torque
+        self.torque = 0
+        # reset Profile
+        self.profile_configuration = 0        
 
 
     def start_rotation(self, velocity=50, acceleration_time = 0):

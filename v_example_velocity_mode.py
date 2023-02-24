@@ -9,10 +9,10 @@ motor1.start_rotation(velocity = 20)
 sleep(2)
 motor1.stop_rotation()
 
-motor1.start_rotation(velocity = 300, acceleration_time = 3000)
+motor1.start_rotation(velocity = 200, acceleration_time = 3000)
 sleep(8)
 motor1.stop_rotation()
 
-motor1.start_rotation(velocity = 100)
+motor1.start_rotation(velocity = -100)
 sleep(2)
 motor1.stop_rotation()
