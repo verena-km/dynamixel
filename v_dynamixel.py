@@ -409,14 +409,15 @@ class DynamixelMotor(object):
             while 1:
                 # Read present position
                 present_position = self.present_position
-                #print("[ID:%04d] GoalPos:%04d  PresPos:%03d" % (self.id, position, dxl_present_position))
                 # break if position was reached
+                # TODO: Use Moving Status 
                 if not abs(position - present_position) > DXL_MOVING_STATUS_THRESHOLD:
                     break
             # Disable Torque
             self.torque = 0
-        # else:
-        #     print("Position limit exceeded")
+            # reset Profile
+            self.profile_configuration = 0
+
 
     def goto_position_time_based(self, position, total_time = 5, acceleration_time = 0):
         if position <= self.max_position_limit and position >= self.min_position_limit:
@@ -440,8 +441,8 @@ class DynamixelMotor(object):
             while 1:
                 # Read present position
                 present_position = self.present_position
-                #print("[ID:%04d] GoalPos:%04d  PresPos:%03d" % (self.id, position, dxl_present_position))
                 # break if position was reached
+                # TODO: Use Moving Status 
                 if not abs(position - present_position) > DXL_MOVING_STATUS_THRESHOLD:
                     break
             # Disable Torque
@@ -481,15 +482,13 @@ class DynamixelMotor(object):
         while 1:
             # Read present position
             present_position = self.present_position
-            #print("[ID:%04d] GoalPos:%04d  PresPos:%03d" % (self.id, position, dxl_present_position))
             # break if positon was reached
+            # TODO: Use Moving Status             
             if not abs(position - present_position) > DXL_MOVING_STATUS_THRESHOLD:
                 break
         # Disable Torque
         self.torque = 0
         
-
-
     def extended_goto_position_time_based(self, position, total_time = 5, acceleration_time = 0):
         # set operation mode "Extended Position Control Mode (4)"
         self.operating_mode = 4
@@ -508,8 +507,8 @@ class DynamixelMotor(object):
         while 1:
             # Read present position
             present_position = self.present_position
-            #print("[ID:%04d] GoalPos:%04d  PresPos:%03d" % (self.id, position, dxl_present_position))
             # break if positon was reached
+            # TODO: Use Moving Status             
             if not abs(position - present_position) > DXL_MOVING_STATUS_THRESHOLD:
                 break
         # Disable Torque
@@ -550,108 +549,3 @@ class DynamixelMotor(object):
         self.torque = 0
 
 
-ds = DynamixelSystem()
-#print(ds.get_motors())
-motor1 = ds.get_motor(1)
-motor2 = ds.get_motor(2)
-
-# motor1.factory_reset()
-# motor2.factory_reset()
-
-# print("model_number:", motor1.model_number)
-# print("model_information:", motor1.model_information)
-# print("firmware_version:", motor1.firmware_version)
-# print("drive_mode:", '{0:07b}'.format(motor1.drive_mode))
-# print("operating_mode:", motor1.operating_mode)
-# print("homing_offset:", motor1.homing_offset)
-# print("moving_threshold", motor1.moving_threshold)
-# print("velocity_limit:", motor1.velocity_limit)
-# print("max_position_limit:", motor1.max_position_limit)
-# print("min_position_limit:", motor1.min_position_limit)
-
-# print("torque:", motor1.torque)
-# print("led:", motor1.led)
-# print("goal_velocity:", motor1.goal_velocity)
-# print("goal_position:", motor1.goal_position)
-# print("present_position:", motor1.present_position)
-# print("present_position:", motor2.present_position)
-
-#motor1.goto_position(0)
-#motor1.extended_goto_position(0)
-
-# motor1.velocity_limit = 700
-# motor1.start_rotation(velocity = 700, acceleration_time = 1000)
-#motor2.start_rotation(velocity = 200, acceleration_time = 0)
-
-#motor1.extended_goto_position(6000)
-# for i in range(5):
-#     sleep(1)
-#     print(motor1.present_velocity)
-#     print(motor1.present_temperature)
-
-# motor1.stop_rotation()
-#motor2.stop_rotation()
-
-# print("present_position:", motor1.present_position)
-# print("present_position:", motor2.present_position)
-
-
-
-
-# ## zwei Motoren gleichzeitig 
-# m1_goal_pos = 1000
-# m2_goal_pos = 4000
-
-# motor1.set_operating_mode(3)
-# motor1.set_torque(1)
-# motor1.set_goal_position(m1_goal_pos)
-# motor2.set_operating_mode(3)
-# motor2.set_torque(1)
-# motor2.set_goal_position(m2_goal_pos)
-
-# while True:
-#     motor1_actual_position = motor1.get_present_position()
-#     motor2_actual_position = motor2.get_present_position()
-
-#     print(motor1_actual_position)
-#     print(motor2_actual_position)
-
-#     if abs(motor1_actual_position-m1_goal_pos) < 20 and (motor2_actual_position-m2_goal_pos) < 20:
-#         break
-# motor1.set_torque(0)
-# motor2.set_torque(0)
-
-
-#motor2.set_id(2)
-
-#print(motor1.get_model_number())
-#print(motor2.get_model_information())
-
-# motor1.factory_reset()
-# motor2.factory_reset()
-
-# motor1.start_rotation(-30)
-# sleep(5)
-# motor1.stop_rotation()
-
-
-#motor2.goto_position(3000)
-
-# motor2.start_rotation(-50)
-# sleep(5)
-# motor2.start_rotation(50)
-# sleep(5)
-# motor2.stop_rotation()
-#print(motor1.get_velocity_limit())
-# motor2.start_rotation()
-# sleep(2)
-# motor1.stop_rotation()
-# sleep(2)
-# motor2.stop_rotation()
-# for i in range(1,10):
-#     motor2.goto_position(1000)
-#     motor2.goto_position(4000,4000)
-
-
-# motor1.goto_degree(90)
-# motor2.goto_degree(90)
