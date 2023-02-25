@@ -1,0 +1,12 @@
+__pycache__/v_control_table.cpython-39.pyc
+__pycache__/v_dynamixel.cpython-39.pyc
+dynamixel_sdk/__pycache__/__init__.cpython-39.pyc
+dynamixel_sdk/__pycache__/group_bulk_read.cpython-39.pyc
+dynamixel_sdk/__pycache__/group_bulk_write.cpython-39.pyc
+dynamixel_sdk/__pycache__/group_sync_read.cpython-39.pyc
+dynamixel_sdk/__pycache__/group_sync_write.cpython-39.pyc
+dynamixel_sdk/__pycache__/packet_handler.cpython-39.pyc
+dynamixel_sdk/__pycache__/port_handler.cpython-39.pyc
+dynamixel_sdk/__pycache__/protocol1_packet_handler.cpython-39.pyc
+dynamixel_sdk/__pycache__/protocol2_packet_handler.cpython-39.pyc
+dynamixel_sdk/__pycache__/robotis_def.cpython-39.pyc
